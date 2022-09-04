@@ -1,0 +1,37 @@
+version: '3.4'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  cassandra-node1:
+    image: cassandra:4.0.6
+    container_name: cassandra-node1
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_SEEDS=cassandra-node1,cassandra-node2
+    networks:
+      - app-tier
+    ports:
+      - "9042:9042"
+
+  cassandra-node2:
+    image: cassandra:4.0.6
+    container_name: cassandra-node2
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_SEEDS=cassandra-node1,cassandra-node2
+    networks:
+      - app-tier
+
+  urlshortener.webui:
+    image: ${DOCKER_REGISTRY-}urlshortenerwebui
+    build:
+      context: .
+      dockerfile: URLShortener.WebUI/Dockerfile
+    depends_on: 
+      - cassandra-node1
+      - cassandra-node2
+    networks:
+      - app-tier
