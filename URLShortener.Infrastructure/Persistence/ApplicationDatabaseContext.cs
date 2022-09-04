@@ -12,16 +12,15 @@ public class ApplicationDatabaseContext : IApplicationDatabaseContext, IDisposab
 
     private bool _disposed;
 
-    public ApplicationDatabaseContext()
+    public ApplicationDatabaseContext(IEnumerable<string> contactPoints, int port, string keyspace)
     {
-        // TODO: read from config
         Cluster = Cassandra.Cluster
             .Builder()
-            .AddContactPoints("127.0.0.1")
-            .WithPort(9042)
+            .AddContactPoints(contactPoints)
+            .WithPort(port)
             .Build();
 
-        Session = Cluster.Connect("store");
+        Session = Cluster.Connect(keyspace);
 
         MappingConfiguration.Global.Define<ShortenedEntryMapping>();
     }
@@ -35,7 +34,9 @@ public class ApplicationDatabaseContext : IApplicationDatabaseContext, IDisposab
     protected virtual void Dispose(bool disposing)
     {
         if (_disposed)
+        {
             return;
+        }
 
         if (disposing)
         {
