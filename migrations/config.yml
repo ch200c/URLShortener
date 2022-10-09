@@ -1,0 +1,7 @@
+keyspace: url_shortener
+profiles:
+  dev:
+    replication:
+      class: SimpleStrategy
+      replication_factor: 2
+migrations_path: .

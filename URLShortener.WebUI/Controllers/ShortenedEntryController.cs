@@ -36,7 +36,7 @@ namespace URLShortener.WebUI.Controllers
 
             return optionalEntry.Match<IActionResult>(
                 entry => Redirect(entry.Url),
-                () => NotFound());
+                () => NotFound());  // TODO method group 
         }
 
         [HttpPut("api/v1/shortenedEntry")]

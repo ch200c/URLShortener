@@ -5,49 +5,10 @@ networks:
     driver: bridge
 
 services:
-  cassandra-node1:
-    image: cassandra:4.0.6
-    container_name: cassandra-node1
-    environment:
-      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
-      - CASSANDRA_SEEDS=cassandra-node1,cassandra-node2
-    networks:
-      - app-tier
-    ports:
-      - "9042:9042"
-
-  cassandra-node2:
-    image: cassandra:4.0.6
-    container_name: cassandra-node2
-    environment:
-      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
-      - CASSANDRA_SEEDS=cassandra-node1,cassandra-node2
-    networks:
-      - app-tier
-
-  cassandra-load-keyspace:
-    container_name: cassandra-load-keyspace
-    image: cassandra:4.0.6
-    depends_on:
-      - cassandra-node1
-      - cassandra-node2
-    volumes:
-      - ./initialize.cql:/initialize.cql
-    command: /bin/bash -c "sleep 5 && echo loading cassandra keyspace && cqlsh cassandra-node1 -f /initialize.cql"
-    networks:
-      - app-tier
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        window: 10s
-
   urlshortener.webui:
     image: ${DOCKER_REGISTRY-}urlshortenerwebui
     build:
       context: .
       dockerfile: URLShortener.WebUI/Dockerfile
-    depends_on: 
-      - cassandra-load-keyspace
     networks:
       - app-tier

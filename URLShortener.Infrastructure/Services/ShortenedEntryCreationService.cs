@@ -22,15 +22,13 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
     public async Task<Option<ShortenedEntry>> CreateAsync(
         CreateShortenedEntryRequest request, CancellationToken cancellationToken = default)
     {
-        var isGeneratedAlias = request.Alias == null;
+        var isAliasGenerationRequired = request.Alias == null;
 
-        var alias = isGeneratedAlias
+        var alias = isAliasGenerationRequired
             ? await _aliasService.GetAvailableAliasAsync(cancellationToken)
             : request.Alias;
 
-#pragma warning disable CS8604 // Possible null reference argument. isGeneratedAlias already covers nullability check
         var requestWithAlias = new CreateShortenedEntryWithAliasRequest(alias, request.Url, request.UserId, request.Expiration);
-#pragma warning restore CS8604 // Possible null reference argument.
 
         return await _shortenedEntryRepository.CreateAsync(requestWithAlias, cancellationToken);
     }

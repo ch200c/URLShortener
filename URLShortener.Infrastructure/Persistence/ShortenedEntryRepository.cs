@@ -27,7 +27,7 @@ public class ShortenedEntryRepository : IShortenedEntryRepository
         var entry = new ShortenedEntry()
         {
             Alias = request.Alias,
-            Url = request.Url.ToString(),
+            Url = request.Url,
             UserId = request.UserId,
             Creation = DateTime.UtcNow,
             Expiration = request.Expiration
