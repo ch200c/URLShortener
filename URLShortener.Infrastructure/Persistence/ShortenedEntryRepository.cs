@@ -1,7 +1,7 @@
 ﻿using Cassandra.Mapping;
 using LanguageExt;
 using URLShortener.Application;
-using URLShortener.Application.Interfaces;
+using URLShortener.Application.Persistence;
 using URLShortener.Domain;
 
 namespace URLShortener.Infrastructure.Persistence;
@@ -28,7 +28,6 @@ public class ShortenedEntryRepository : IShortenedEntryRepository
         {
             Alias = request.Alias,
             Url = request.Url,
-            UserId = request.UserId,
             Creation = DateTime.UtcNow,
             Expiration = request.Expiration
         };

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using URLShortener.Application;
-using URLShortener.Application.Interfaces;
+using URLShortener.Application.Services;
+using URLShortener.Application.Persistence;
 using URLShortener.Domain;
 
 namespace URLShortener.WebUI.Controllers
@@ -60,7 +61,7 @@ namespace URLShortener.WebUI.Controllers
 
         private static CreateShortenedEntryResponse MapCreateShortenedEntryResponse(ShortenedEntry entry)
         {
-            return new CreateShortenedEntryResponse(entry.Alias, entry.Url, entry.UserId, entry.Creation, entry.Expiration);
+            return new CreateShortenedEntryResponse(entry.Alias, entry.Url, entry.Creation, entry.Expiration);
         }
     }
 }

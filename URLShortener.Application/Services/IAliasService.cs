@@ -1,4 +1,4 @@
-﻿namespace URLShortener.Application.Interfaces;
+﻿namespace URLShortener.Application.Services;
 
 public interface IAliasService
 {

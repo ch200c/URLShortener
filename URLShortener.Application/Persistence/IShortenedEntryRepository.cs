@@ -1,7 +1,7 @@
 ﻿using LanguageExt;
 using URLShortener.Domain;
 
-namespace URLShortener.Application.Interfaces;
+namespace URLShortener.Application.Persistence;
 
 public interface IShortenedEntryRepository
 {

@@ -1,7 +1,7 @@
 ﻿using Cassandra;
 using Cassandra.Mapping;
-using URLShortener.Application.Interfaces;
 using URLShortener.Application.Mappings;
+using URLShortener.Application.Persistence;
 
 namespace URLShortener.Infrastructure.Persistence;
 

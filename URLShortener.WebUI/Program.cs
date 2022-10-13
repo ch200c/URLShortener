@@ -1,6 +1,7 @@
-using URLShortener.Application.Interfaces;
+using URLShortener.Application.Services;
 using URLShortener.Infrastructure.Services;
 using URLShortener.Infrastructure.Persistence;
+using URLShortener.Application.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 

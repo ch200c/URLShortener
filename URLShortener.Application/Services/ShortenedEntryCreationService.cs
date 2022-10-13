@@ -1,9 +1,8 @@
 ﻿using LanguageExt;
-using URLShortener.Application;
-using URLShortener.Application.Interfaces;
+using URLShortener.Application.Persistence;
 using URLShortener.Domain;
 
-namespace URLShortener.Infrastructure.Services;
+namespace URLShortener.Application.Services;
 
 // TODO: Resilience policies
 public class ShortenedEntryCreationService : IShortenedEntryCreationService
@@ -28,7 +27,7 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
             ? await _aliasService.GetAvailableAliasAsync(cancellationToken)
             : request.Alias;
 
-        var requestWithAlias = new CreateShortenedEntryWithAliasRequest(alias, request.Url, request.UserId, request.Expiration);
+        var requestWithAlias = new CreateShortenedEntryWithAliasRequest(alias, request.Url, request.Expiration);
 
         return await _shortenedEntryRepository.CreateAsync(requestWithAlias, cancellationToken);
     }
