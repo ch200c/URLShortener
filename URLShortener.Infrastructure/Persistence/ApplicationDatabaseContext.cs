@@ -24,9 +24,9 @@ public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext, IA
         MappingConfiguration.Global.Define<ShortenedEntryMapping>();
     }
 
-    public Task<ICluster> GetClusterAsync(CancellationToken cancellationToken = default)
+    public async Task<ICluster> GetClusterAsync(CancellationToken cancellationToken)
     {
-        _clusterInitializationSemaphore.WaitAsync(cancellationToken);
+        await _clusterInitializationSemaphore.WaitAsync(cancellationToken);
 
         try
         {
@@ -41,10 +41,10 @@ public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext, IA
             _clusterInitializationSemaphore.Release();
         }
 
-        return Task.FromResult(_cluster);
+        return _cluster;
     }
 
-    public async Task<ISession> GetSessionAsync(CancellationToken cancellationToken = default)
+    public async Task<ISession> GetSessionAsync(CancellationToken cancellationToken)
     {
         await _sessionInitializationSemaphore.WaitAsync(cancellationToken);
 

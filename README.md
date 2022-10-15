@@ -20,6 +20,9 @@ docker run --rm -it -v %cd%/migrations:/migrations --network cassandra-network c
 
 docker build -f URLShortener.WebUI/Dockerfile -t url-shortener .
 docker run --rm -d -e "ASPNETCORE_ENVIRONMENT=Development" -e "ASPNETCORE_URLS=http://+:80" -p 9889:80/tcp --name url-shortener url-shortener
+
+docker build -f URLShortener.Generator/Dockerfile -t url-shortener-generator .
+docker run --rm -d -e "DOTNET_ENVIRONMENT=Development" --name url-shortener-generator url-shortener-generator
 ```
 
 If all is well, you should be able to access the API at http://localhost:9889/swagger/index.html
@@ -29,6 +32,7 @@ To clean up and exit containers, run the following commands:
 docker kill cassandra-node1
 docker kill cassandra-node2
 docker kill url-shortener
+docker kill url-shortener-generator
 ```
 
 ### Docker Compose (outdated)
