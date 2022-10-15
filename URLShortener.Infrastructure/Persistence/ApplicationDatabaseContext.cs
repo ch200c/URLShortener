@@ -5,45 +5,82 @@ using URLShortener.Application.Persistence;
 
 namespace URLShortener.Infrastructure.Persistence;
 
-public class ApplicationDatabaseContext : IApplicationDatabaseContext, IDisposable
+public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext, IAsyncDisposable, IDisposable
 {
-    public ICluster Cluster { get; }
-    public ISession Session { get; }
-
-    private bool _disposed;
+    private readonly SemaphoreSlim _clusterInitializationSemaphore = new(1, 1);
+    private readonly SemaphoreSlim _sessionInitializationSemaphore = new(1, 1);
+    private readonly IEnumerable<string> _contactPoints;
+    private readonly int _port;
+    private readonly string _keyspace;
+    private ICluster? _cluster;
+    private ISession? _session;
 
     public ApplicationDatabaseContext(IEnumerable<string> contactPoints, int port, string keyspace)
     {
-        Cluster = Cassandra.Cluster
-            .Builder()
-            .AddContactPoints(contactPoints)
-            .WithPort(port)
-            .Build();
-
-        Session = Cluster.Connect(keyspace);
+        _contactPoints = contactPoints;
+        _port = port;
+        _keyspace = keyspace;
 
         MappingConfiguration.Global.Define<ShortenedEntryMapping>();
     }
 
-    public void Dispose()
+    public Task<ICluster> GetClusterAsync(CancellationToken cancellationToken = default)
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        _clusterInitializationSemaphore.WaitAsync(cancellationToken);
+
+        try
+        {
+            _cluster ??= Cluster
+                .Builder()
+                .AddContactPoints(_contactPoints)
+                .WithPort(_port)
+                .Build();
+        }
+        finally
+        {
+            _clusterInitializationSemaphore.Release();
+        }
+
+        return Task.FromResult(_cluster);
     }
 
-    protected virtual void Dispose(bool disposing)
+    public async Task<ISession> GetSessionAsync(CancellationToken cancellationToken = default)
     {
-        if (_disposed)
+        await _sessionInitializationSemaphore.WaitAsync(cancellationToken);
+
+        try
+        {
+            if (_session == null)
+            {
+                var cluster = await GetClusterAsync(cancellationToken);
+                _session = await cluster.ConnectAsync(_keyspace);
+            }
+        }
+        finally
+        {
+            _sessionInitializationSemaphore.Release();
+        }
+
+        return _session;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_cluster == null)
         {
             return;
         }
 
-        if (disposing)
+        await _cluster.ShutdownAsync();
+    }
+
+    public void Dispose()
+    {
+        if (_cluster == null)
         {
-            Session.Dispose();
-            Cluster.Dispose();
+            return;
         }
 
-        _disposed = true;
+        _cluster.Shutdown();
     }
 }

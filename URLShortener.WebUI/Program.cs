@@ -22,18 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IApplicationDatabaseContext, ApplicationDatabaseContext>(serviceProvider =>
-{
-    var contactPoints = builder.Configuration
-        .GetSection("ConnectionStrings:Cassandra:ContactPoints")
-        .GetChildren()
-        .Select(section => section.Value);
-
-    var port = builder.Configuration.GetValue<int>("ConnectionStrings:Cassandra:Port");
-    var keyspace = builder.Configuration.GetValue<string>("ConnectionStrings:Cassandra:Keyspace");
-
-    return new ApplicationDatabaseContext(contactPoints, port, keyspace);
-});
+builder.Services.AddCassandra(builder.Configuration.GetSection("ConnectionStrings:Cassandra"));
 
 builder.Services.AddTransient<IShortenedEntryRepository, ShortenedEntryRepository>();
 builder.Services.AddTransient<IAliasService, AliasService>();

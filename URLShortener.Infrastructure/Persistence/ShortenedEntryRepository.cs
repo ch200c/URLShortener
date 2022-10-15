@@ -17,7 +17,9 @@ public class ShortenedEntryRepository : IShortenedEntryRepository
 
     public async Task<Option<ShortenedEntry>> GetAsync(string alias, CancellationToken cancellationToken = default)
     {
-        var mapper = new Mapper(_databaseContext.Session);
+        var session = await _databaseContext.GetSessionAsync(cancellationToken);
+        var mapper = new Mapper(session);
+
         return await mapper.SingleOrDefaultAsync<ShortenedEntry>("SELECT * FROM shortened_entries WHERE alias=?", alias);
     }
 
@@ -31,8 +33,10 @@ public class ShortenedEntryRepository : IShortenedEntryRepository
             Creation = DateTime.UtcNow,
             Expiration = request.Expiration
         };
-       
-        var mapper = new Mapper(_databaseContext.Session);
+
+        var session = await _databaseContext.GetSessionAsync(cancellationToken);
+        var mapper = new Mapper(session);
+
         var appliedInfo = await mapper.InsertIfNotExistsAsync(entry);
 
         return appliedInfo.Applied ? entry : Option<ShortenedEntry>.None;

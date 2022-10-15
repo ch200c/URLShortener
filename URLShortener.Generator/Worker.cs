@@ -10,6 +10,7 @@ namespace URLShortener.Generator
         private readonly int _aliasLength;
         private readonly char[] _allowedCharacters;
         private readonly TimeSpan _aliasGenerationInterval;
+        private readonly int _aliasGenerationCount;
         private readonly IAliasGenerator _aliasGenerator;
         private readonly IShortenedEntryRepository _shortenedEntryRepository;
 
@@ -18,6 +19,7 @@ namespace URLShortener.Generator
             int aliasLength,
             char[] allowedCharacters,
             TimeSpan aliasGenerationInterval,
+            int aliasGenerationCount,
             IAliasGenerator aliasGenerator,
             IShortenedEntryRepository shortenedEntryRepository)
         {
@@ -25,6 +27,7 @@ namespace URLShortener.Generator
             _aliasLength = aliasLength;
             _allowedCharacters = allowedCharacters;
             _aliasGenerationInterval = aliasGenerationInterval;
+            _aliasGenerationCount = aliasGenerationCount;
             _aliasGenerator = aliasGenerator;
             _shortenedEntryRepository = shortenedEntryRepository;
         }
@@ -33,9 +36,12 @@ namespace URLShortener.Generator
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var alias = await GenerateAliasAsync(stoppingToken);
-
-                // Publish
+                for (var i = 0; i < _aliasGenerationCount; i++)
+                {
+                    var alias = await GenerateAliasAsync(stoppingToken);
+                    // Publish
+                    _logger.LogInformation("Generated {Alias}", alias);
+                }
 
                 _logger.LogDebug("Sleeping for {TimeSpan}", _aliasGenerationInterval);
                 await Task.Delay(_aliasGenerationInterval, stoppingToken);

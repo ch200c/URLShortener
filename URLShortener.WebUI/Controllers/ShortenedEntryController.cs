@@ -35,6 +35,11 @@ namespace URLShortener.WebUI.Controllers
             // TODO: Application service + cache
             var optionalEntry = await _shortenedEntryRepository.GetAsync(alias);
 
+            // TODO compare with nulls
+            //optionalEntry
+            //    .Some<IActionResult>(entry => Redirect(entry.Url))
+            //    .None(NotFound);
+
             return optionalEntry.Match<IActionResult>(
                 entry => Redirect(entry.Url),
                 () => NotFound());  // TODO method group 
