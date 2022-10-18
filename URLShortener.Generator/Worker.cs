@@ -58,7 +58,7 @@ namespace URLShortener.Generator
 
             while (isGenerating)
             {
-                var optionalEntry = await _shortenedEntryRepository.GetAsync(aliasCandidate, cancellationToken);
+                var optionalEntry = await _shortenedEntryRepository.GetByAliasAsync(aliasCandidate, cancellationToken);
 
                 optionalEntry.Match(
                     entry =>

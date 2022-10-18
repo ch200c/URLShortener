@@ -2,5 +2,5 @@
 
 public interface IAliasService
 {
-    Task<string> GetAvailableAliasAsync(CancellationToken cancellationToken = default);
+    Task<string> GetAvailableAliasAsync(CancellationToken cancellationToken);
 }

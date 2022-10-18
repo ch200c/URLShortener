@@ -30,10 +30,10 @@ namespace URLShortener.WebUI.Controllers
         [HttpGet("{alias}")]
         [ProducesResponseType(StatusCodes.Status302Found, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetShortenedEntry([FromRoute] string alias)
+        public async Task<IActionResult> GetShortenedEntry([FromRoute] string alias, CancellationToken cancellationToken)
         {
             // TODO: Application service + cache
-            var optionalEntry = await _shortenedEntryRepository.GetAsync(alias);
+            var optionalEntry = await _shortenedEntryRepository.GetByAliasAsync(alias, cancellationToken);
 
             // TODO compare with nulls
             //optionalEntry
@@ -48,9 +48,10 @@ namespace URLShortener.WebUI.Controllers
         [HttpPut("api/v1/shortenedEntry")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateShortenedEntryResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateShortenedEntry([FromBody] CreateShortenedEntryRequest request)
+        public async Task<IActionResult> CreateShortenedEntry(
+            [FromBody] CreateShortenedEntryRequest request, CancellationToken cancellationToken)
         {
-            var optionalEntry = await _shortenedEntryCreationService.CreateAsync(request);
+            var optionalEntry = await _shortenedEntryCreationService.CreateAsync(request, cancellationToken);
 
             return optionalEntry.Match<IActionResult>(
                 entry =>

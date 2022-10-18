@@ -19,7 +19,7 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
     }
 
     public async Task<Option<ShortenedEntry>> CreateAsync(
-        CreateShortenedEntryRequest request, CancellationToken cancellationToken = default)
+        CreateShortenedEntryRequest request, CancellationToken cancellationToken)
     {
         var isAliasGenerationRequired = request.Alias == null;
 
@@ -27,8 +27,14 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
             ? await _aliasService.GetAvailableAliasAsync(cancellationToken)
             : request.Alias;
 
-        var requestWithAlias = new CreateShortenedEntryWithAliasRequest(alias, request.Url, request.Expiration);
+        var shortenedEntry = new ShortenedEntry() 
+        { 
+            Alias = alias, 
+            Url = request.Url,
+            Creation = DateTime.UtcNow,
+            Expiration = request.Expiration,
+        };
 
-        return await _shortenedEntryRepository.CreateAsync(requestWithAlias, cancellationToken);
+        return await _shortenedEntryRepository.CreateAsync(shortenedEntry, cancellationToken);
     }
 }

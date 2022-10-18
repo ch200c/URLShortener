@@ -6,5 +6,5 @@ namespace URLShortener.Application.Services;
 public interface IShortenedEntryCreationService
 {
     Task<Option<ShortenedEntry>> CreateAsync(
-        CreateShortenedEntryRequest request, CancellationToken cancellationToken = default);
+        CreateShortenedEntryRequest request, CancellationToken cancellationToken);
 }
