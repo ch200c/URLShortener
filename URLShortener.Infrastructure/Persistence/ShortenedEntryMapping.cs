@@ -1,6 +1,6 @@
 ﻿using URLShortener.Domain;
 
-namespace URLShortener.Application.Mappings;
+namespace URLShortener.Infrastructure.Persistence;
 
 public class ShortenedEntryMapping : Cassandra.Mapping.Mappings
 {

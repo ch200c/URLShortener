@@ -1,4 +1,5 @@
-﻿using Cassandra.Mapping;
+﻿using Cassandra;
+using Cassandra.Mapping;
 using LanguageExt;
 using URLShortener.Application.Persistence;
 using URLShortener.Domain;
@@ -7,9 +8,9 @@ namespace URLShortener.Infrastructure.Persistence;
 
 public class ShortenedEntryRepository : IShortenedEntryRepository
 {
-    private readonly IApplicationDatabaseContext _databaseContext;
+    private readonly IApplicationDatabaseContext<ISession> _databaseContext;
 
-    public ShortenedEntryRepository(IApplicationDatabaseContext databaseContext)
+    public ShortenedEntryRepository(IApplicationDatabaseContext<ISession> databaseContext)
     {
         _databaseContext = databaseContext;
     }

@@ -1,9 +1,6 @@
-﻿using Cassandra;
+﻿namespace URLShortener.Application.Persistence;
 
-namespace URLShortener.Application.Persistence;
-
-public interface IApplicationDatabaseContext
+public interface IApplicationDatabaseContext<TSession>
 {
-    Task<ICluster> GetClusterAsync(CancellationToken cancellationToken);
-    Task<ISession> GetSessionAsync(CancellationToken cancellationToken);
+    Task<TSession> GetSessionAsync(CancellationToken cancellationToken);
 }

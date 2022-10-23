@@ -1,11 +1,10 @@
 ﻿using Cassandra;
 using Cassandra.Mapping;
-using URLShortener.Application.Mappings;
 using URLShortener.Application.Persistence;
 
 namespace URLShortener.Infrastructure.Persistence;
 
-public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext, IAsyncDisposable, IDisposable
+public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext<ISession>, IAsyncDisposable, IDisposable
 {
     private readonly SemaphoreSlim _clusterInitializationSemaphore = new(1, 1);
     private readonly SemaphoreSlim _sessionInitializationSemaphore = new(1, 1);
@@ -24,6 +23,7 @@ public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext, IA
         MappingConfiguration.Global.Define<ShortenedEntryMapping>();
     }
 
+    // TODO: private
     public async Task<ICluster> GetClusterAsync(CancellationToken cancellationToken)
     {
         await _clusterInitializationSemaphore.WaitAsync(cancellationToken);
