@@ -8,16 +8,16 @@ namespace URLShortener.Infrastructure.Persistence;
 
 public class ShortenedEntryRepository : IShortenedEntryRepository
 {
-    private readonly IApplicationDatabaseContext<ISession> _databaseContext;
+    private readonly IDatabaseConnectionProvider<ISession> _databaseContext;
 
-    public ShortenedEntryRepository(IApplicationDatabaseContext<ISession> databaseContext)
+    public ShortenedEntryRepository(IDatabaseConnectionProvider<ISession> databaseContext)
     {
         _databaseContext = databaseContext;
     }
 
     public async Task<Option<ShortenedEntry>> GetByAliasAsync(string alias, CancellationToken cancellationToken)
     {
-        var session = await _databaseContext.GetSessionAsync(cancellationToken);
+        var session = await _databaseContext.GetConnectionAsync(cancellationToken);
         var mapper = new Mapper(session);
 
         return await mapper.SingleOrDefaultAsync<ShortenedEntry>("SELECT * FROM shortened_entries WHERE alias=?", alias);
@@ -26,7 +26,7 @@ public class ShortenedEntryRepository : IShortenedEntryRepository
     public async Task<Option<ShortenedEntry>> CreateAsync(
         ShortenedEntry shortenedEntry, CancellationToken cancellationToken)
     {
-        var session = await _databaseContext.GetSessionAsync(cancellationToken);
+        var session = await _databaseContext.GetConnectionAsync(cancellationToken);
         var mapper = new Mapper(session);
 
         var appliedInfo = await mapper.InsertIfNotExistsAsync(shortenedEntry);

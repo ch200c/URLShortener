@@ -6,7 +6,7 @@ using URLShortener.Infrastructure.Persistence;
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        services.AddCassandra(context.Configuration.GetSection("ConnectionStrings:Cassandra"));
+        services.AddCassandra(context.Configuration.GetSection("Cassandra"));
 
         services.AddTransient<IAliasGenerator, AliasGenerator>();
         services.AddTransient<IShortenedEntryRepository, ShortenedEntryRepository>();

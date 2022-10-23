@@ -4,7 +4,7 @@ using URLShortener.Application.Persistence;
 
 namespace URLShortener.Infrastructure.Persistence;
 
-public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext<ISession>, IAsyncDisposable, IDisposable
+public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<ISession>, IAsyncDisposable, IDisposable
 {
     private readonly SemaphoreSlim _clusterInitializationSemaphore = new(1, 1);
     private readonly SemaphoreSlim _sessionInitializationSemaphore = new(1, 1);
@@ -14,7 +14,7 @@ public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext<ISe
     private ICluster? _cluster;
     private ISession? _session;
 
-    public ApplicationDatabaseContext(IEnumerable<string> contactPoints, int port, string keyspace)
+    public CassandraConnectionProvider(IEnumerable<string> contactPoints, int port, string keyspace)
     {
         _contactPoints = contactPoints;
         _port = port;
@@ -44,7 +44,7 @@ public sealed class ApplicationDatabaseContext : IApplicationDatabaseContext<ISe
         return _cluster;
     }
 
-    public async Task<ISession> GetSessionAsync(CancellationToken cancellationToken)
+    public async Task<ISession> GetConnectionAsync(CancellationToken cancellationToken)
     {
         await _sessionInitializationSemaphore.WaitAsync(cancellationToken);
 

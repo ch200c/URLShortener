@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddCassandra(this IServiceCollection services, IConfigurationSection configurationSection)
     {
-        return services.AddSingleton<IApplicationDatabaseContext<ISession>, ApplicationDatabaseContext>(serviceProvider =>
+        return services.AddSingleton<IDatabaseConnectionProvider<ISession>, CassandraConnectionProvider>(serviceProvider =>
         {
             var contactPoints = configurationSection
                 .GetSection("ContactPoints")
@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
             var port = configurationSection.GetValue<int>("Port");
             var keyspace = configurationSection.GetValue<string>("Keyspace");
 
-            return new ApplicationDatabaseContext(contactPoints, port, keyspace);
+            return new CassandraConnectionProvider(contactPoints, port, keyspace);
         });
     }
 }

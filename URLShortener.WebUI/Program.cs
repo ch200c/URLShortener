@@ -25,7 +25,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCassandra(builder.Configuration.GetSection("ConnectionStrings:Cassandra"));
+builder.Services.AddCassandra(builder.Configuration.GetSection("Cassandra"));
 
 builder.Services.AddSingleton<KafkaClientHandle>(_ =>
 {
@@ -40,6 +40,7 @@ builder.Services.AddSingleton<IMessageProducer<Message<string, string>>, KafkaPr
 {
     var kafkaClientHandle = serviceProvider.GetRequiredService<KafkaClientHandle>();
     var topic = builder.Configuration.GetValue<string>("Kafka:AliasTopic");
+
     return new KafkaProducer<string, string>(kafkaClientHandle, topic);
 });
 
