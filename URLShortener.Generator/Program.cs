@@ -1,12 +1,32 @@
+using Confluent.Kafka;
+using URLShortener.Application.Messaging;
 using URLShortener.Application.Persistence;
 using URLShortener.Application.Services;
 using URLShortener.Generator;
+using URLShortener.Infrastructure.Messaging;
 using URLShortener.Infrastructure.Persistence;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         services.AddCassandra(context.Configuration.GetSection("Cassandra"));
+
+        services.AddSingleton<KafkaClientHandle>(_ =>
+        {
+            var producerConfig = new ProducerConfig();
+            context.Configuration.GetSection("Kafka:ProducerSettings")
+                .Bind(producerConfig);
+
+            return new KafkaClientHandle(producerConfig);
+        });
+
+        services.AddSingleton<IMessageProducer<Message<Null, string>>, KafkaProducer<Null, string>>(serviceProvider =>
+        {
+            var kafkaClientHandle = serviceProvider.GetRequiredService<KafkaClientHandle>();
+            var topic = context.Configuration.GetValue<string>("Kafka:AliasCandidatesTopic");
+
+            return new KafkaProducer<Null, string>(kafkaClientHandle, topic);
+        });
 
         services.AddTransient<IAliasGenerator, AliasGenerator>();
         services.AddTransient<IShortenedEntryRepository, ShortenedEntryRepository>();
@@ -20,6 +40,7 @@ IHost host = Host.CreateDefaultBuilder(args)
             var aliasGenerationCount = context.Configuration.GetValue<int>("AliasGenerationCount");
             var aliasGenerator = serviceProvider.GetRequiredService<IAliasGenerator>();
             var shortenedEntryRepository = serviceProvider.GetRequiredService<IShortenedEntryRepository>();
+            var messageProducer = serviceProvider.GetRequiredService<IMessageProducer<Message<Null, string>>>();
 
             return new Worker(
                 logger,
@@ -28,7 +49,8 @@ IHost host = Host.CreateDefaultBuilder(args)
                 aliasGenerationInterval,
                 aliasGenerationCount,
                 aliasGenerator,
-                shortenedEntryRepository);
+                shortenedEntryRepository,
+                messageProducer);
         });
     })
     .Build();

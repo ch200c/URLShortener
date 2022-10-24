@@ -5,6 +5,7 @@ using URLShortener.Application.Persistence;
 using URLShortener.Infrastructure.Messaging;
 using Confluent.Kafka;
 using URLShortener.Application.Messaging;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,21 +28,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCassandra(builder.Configuration.GetSection("Cassandra"));
 
-builder.Services.AddSingleton<KafkaClientHandle>(_ =>
+builder.Services.AddSingleton<IMessageConsumer<ConsumeResult<Null, string>>, KafkaConsumer>(_ =>
 {
-    var producerConfig = new ProducerConfig();
-    builder.Configuration.GetSection("Kafka:ProducerSettings")
-        .Bind(producerConfig);
+    var consumerConfig = new ConsumerConfig();
+    builder.Configuration.GetSection("Kafka:ConsumerSettings")
+        .Bind(consumerConfig);
+    var topic = builder.Configuration.GetValue<string>("Kafka:AliasCandidatesTopic");
 
-    return new KafkaClientHandle(producerConfig);
-});
-
-builder.Services.AddSingleton<IMessageProducer<Message<string, string>>, KafkaProducer<string, string>>(serviceProvider =>
-{
-    var kafkaClientHandle = serviceProvider.GetRequiredService<KafkaClientHandle>();
-    var topic = builder.Configuration.GetValue<string>("Kafka:AliasTopic");
-
-    return new KafkaProducer<string, string>(kafkaClientHandle, topic);
+    return new KafkaConsumer(consumerConfig, topic);
 });
 
 builder.Services.AddTransient<IShortenedEntryRepository, ShortenedEntryRepository>();

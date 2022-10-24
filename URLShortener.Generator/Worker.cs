@@ -1,4 +1,6 @@
+using Confluent.Kafka;
 using URLShortener.Application;
+using URLShortener.Application.Messaging;
 using URLShortener.Application.Persistence;
 using URLShortener.Application.Services;
 
@@ -13,6 +15,7 @@ namespace URLShortener.Generator
         private readonly int _aliasGenerationCount;
         private readonly IAliasGenerator _aliasGenerator;
         private readonly IShortenedEntryRepository _shortenedEntryRepository;
+        private readonly IMessageProducer<Message<Null, string>> _messageProducer;
 
         public Worker(
             ILogger<Worker> logger,
@@ -21,7 +24,8 @@ namespace URLShortener.Generator
             TimeSpan aliasGenerationInterval,
             int aliasGenerationCount,
             IAliasGenerator aliasGenerator,
-            IShortenedEntryRepository shortenedEntryRepository)
+            IShortenedEntryRepository shortenedEntryRepository,
+            IMessageProducer<Message<Null, string>> messageProducer)
         {
             _logger = logger;
             _aliasLength = aliasLength;
@@ -30,6 +34,7 @@ namespace URLShortener.Generator
             _aliasGenerationCount = aliasGenerationCount;
             _aliasGenerator = aliasGenerator;
             _shortenedEntryRepository = shortenedEntryRepository;
+            _messageProducer = messageProducer;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -39,9 +44,14 @@ namespace URLShortener.Generator
                 for (var i = 0; i < _aliasGenerationCount; i++)
                 {
                     var alias = await GenerateAliasAsync(stoppingToken);
-                    // Publish
+
+                    var message = new Message<Null, string>() { Value = alias };
+                    await _messageProducer.ProduceAsync(message, stoppingToken);
+
                     _logger.LogInformation("Generated {Alias}", alias);
                 }
+
+                await _messageProducer.FlushAsync(stoppingToken);
 
                 _logger.LogDebug("Sleeping for {TimeSpan}", _aliasGenerationInterval);
                 await Task.Delay(_aliasGenerationInterval, stoppingToken);
