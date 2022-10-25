@@ -35,14 +35,9 @@ namespace URLShortener.WebUI.Controllers
             // TODO: Application service + cache
             var optionalEntry = await _shortenedEntryRepository.GetByAliasAsync(alias, cancellationToken);
 
-            // TODO compare with nulls
-            //optionalEntry
-            //    .Some<IActionResult>(entry => Redirect(entry.Url))
-            //    .None(NotFound);
-
-            return optionalEntry.Match<IActionResult>(
-                entry => Redirect(entry.Url),
-                () => NotFound());  // TODO method group 
+            return optionalEntry
+                .Some<IActionResult>(entry => Redirect(entry.Url))
+                .None(NotFound);
         }
 
         [HttpPut("api/v1/shortenedEntry")]
@@ -53,16 +48,13 @@ namespace URLShortener.WebUI.Controllers
         {
             var optionalEntry = await _shortenedEntryCreationService.CreateAsync(request, cancellationToken);
 
-            return optionalEntry.Match<IActionResult>(
-                entry =>
+            return optionalEntry
+                .Some<IActionResult>(entry =>
                 {
                     var response = MapCreateShortenedEntryResponse(entry);
                     return CreatedAtAction(nameof(GetShortenedEntry), new { alias = response.Alias }, response);
-                },
-                () =>
-                {
-                    return BadRequest("Alias already exists");
-                });
+                })
+                .None(BadRequest("Alias already exists"));
         }
 
         private static CreateShortenedEntryResponse MapCreateShortenedEntryResponse(ShortenedEntry entry)

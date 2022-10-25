@@ -70,12 +70,12 @@ namespace URLShortener.Generator
             {
                 var optionalEntry = await _shortenedEntryRepository.GetByAliasAsync(aliasCandidate, cancellationToken);
 
-                optionalEntry.Match(
-                    entry =>
+                optionalEntry
+                    .Some(entry =>
                     {
                         aliasCandidate = _aliasGenerator.Generate(request);
-                    },
-                    () =>
+                    })
+                    .None(() =>
                     {
                         isGenerating = false;
                     });

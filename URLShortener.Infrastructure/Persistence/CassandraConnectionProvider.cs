@@ -23,7 +23,7 @@ public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<IS
         MappingConfiguration.Global.Define<ShortenedEntryMapping>();
     }
 
-    // TODO: private
+    // TODO: private and Option<usage>
     public async Task<ICluster> GetClusterAsync(CancellationToken cancellationToken)
     {
         await _clusterInitializationSemaphore.WaitAsync(cancellationToken);

@@ -12,6 +12,7 @@ public sealed class KafkaProducer<TKey, TValue> : IMessageProducer<Message<TKey,
     {
         _producer = new DependentProducerBuilder<TKey, TValue>(kafkaClientHandle.Handle)
             .Build();
+
         _topic = topic;
     }
 

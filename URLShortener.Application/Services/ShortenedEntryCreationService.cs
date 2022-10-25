@@ -21,15 +21,11 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
     public async Task<Option<ShortenedEntry>> CreateAsync(
         CreateShortenedEntryRequest request, CancellationToken cancellationToken)
     {
-        var isAliasGenerationRequired = request.Alias == null;
+        var alias = await request.Alias.IfNoneAsync(() => _aliasService.GetAvailableAliasAsync(cancellationToken));
 
-        var alias = isAliasGenerationRequired
-            ? await _aliasService.GetAvailableAliasAsync(cancellationToken)
-            : request.Alias;
-
-        var shortenedEntry = new ShortenedEntry() 
-        { 
-            Alias = alias, 
+        var shortenedEntry = new ShortenedEntry()
+        {
+            Alias = alias,
             Url = request.Url,
             Creation = DateTime.UtcNow,
             Expiration = request.Expiration,

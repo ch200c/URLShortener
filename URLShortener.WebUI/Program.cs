@@ -5,7 +5,6 @@ using URLShortener.Application.Persistence;
 using URLShortener.Infrastructure.Messaging;
 using Confluent.Kafka;
 using URLShortener.Application.Messaging;
-using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +30,10 @@ builder.Services.AddCassandra(builder.Configuration.GetSection("Cassandra"));
 builder.Services.AddSingleton<IMessageConsumer<ConsumeResult<Null, string>>, KafkaConsumer>(_ =>
 {
     var consumerConfig = new ConsumerConfig();
-    builder.Configuration.GetSection("Kafka:ConsumerSettings")
+    builder.Configuration
+        .GetSection("Kafka:ConsumerSettings")
         .Bind(consumerConfig);
+
     var topic = builder.Configuration.GetValue<string>("Kafka:AliasCandidatesTopic");
 
     return new KafkaConsumer(consumerConfig, topic);
