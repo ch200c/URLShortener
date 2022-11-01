@@ -14,7 +14,6 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicyName, policy =>
     {
-        // TODO: Test out in non-dev env - is this required?
         var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS")?.Split(';') ?? Array.Empty<string>();
         policy.WithOrigins(urls).WithMethods("GET").AllowAnyHeader();
     });

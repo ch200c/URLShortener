@@ -4,7 +4,6 @@ using URLShortener.Domain;
 
 namespace URLShortener.Application.Services;
 
-// TODO: Resilience policies
 public class ShortenedEntryCreationService : IShortenedEntryCreationService
 {
     private readonly IAliasService _aliasService;
@@ -21,8 +20,16 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
     public async Task<Option<ShortenedEntry>> CreateAsync(
         CreateShortenedEntryRequest request, CancellationToken cancellationToken)
     {
-        var alias = await request.Alias.IfNoneAsync(() => 
-            _aliasService.GetAvailableAliasAsync(cancellationToken));
+        string alias;
+
+        if (request.Alias == null)
+        {
+            alias = await _aliasService.GetAvailableAliasAsync(cancellationToken);
+        }
+        else
+        {
+            alias = request.Alias;
+        }
 
         var shortenedEntry = new ShortenedEntry
         {

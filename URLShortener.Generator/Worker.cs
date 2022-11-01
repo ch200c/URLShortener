@@ -58,7 +58,6 @@ public class Worker : BackgroundService
         }
     }
 
-    // TODO: Optimize in batches/cache, etc
     private async Task<string> GenerateAliasAsync(CancellationToken cancellationToken)
     {
         var request = new GenerateAliasRequest(_aliasLength, _allowedCharacters);

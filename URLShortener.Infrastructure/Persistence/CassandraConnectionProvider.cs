@@ -1,7 +1,6 @@
 ﻿using Cassandra;
 using Cassandra.Mapping;
 using LanguageExt;
-using static LanguageExt.Prelude;
 using URLShortener.Application.Persistence;
 
 namespace URLShortener.Infrastructure.Persistence;
@@ -39,7 +38,7 @@ public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<IS
                 return await cluster.ConnectAsync(_keyspace);
             });
 
-            _optionalSession = Some(session);
+            _optionalSession = Prelude.Some(session);
         }
         finally
         {
@@ -63,7 +62,7 @@ public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<IS
                     .WithPort(_port)
                     .Build());
 
-            _optionalCluster = Some(cluster);
+            _optionalCluster = Prelude.Some(cluster);
         }
         finally
         {
