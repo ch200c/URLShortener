@@ -8,16 +8,16 @@ namespace URLShortener.Infrastructure.Persistence;
 
 public class ShortenedEntryRepository : IShortenedEntryRepository
 {
-    private readonly IDatabaseConnectionProvider<ISession> _databaseContext;
+    private readonly IDatabaseConnectionProvider<ISession> _databaseConnectionProvider;
 
-    public ShortenedEntryRepository(IDatabaseConnectionProvider<ISession> databaseContext)
+    public ShortenedEntryRepository(IDatabaseConnectionProvider<ISession> databaseConnectionProvider)
     {
-        _databaseContext = databaseContext;
+        _databaseConnectionProvider = databaseConnectionProvider;
     }
 
     public async Task<Option<ShortenedEntry>> GetByAliasAsync(string alias, CancellationToken cancellationToken)
     {
-        var session = await _databaseContext.GetConnectionAsync(cancellationToken);
+        var session = await _databaseConnectionProvider.GetConnectionAsync(cancellationToken);
         var mapper = new Mapper(session);
 
         return await mapper.SingleOrDefaultAsync<ShortenedEntry>("SELECT * FROM shortened_entries WHERE alias=?", alias);
@@ -26,11 +26,13 @@ public class ShortenedEntryRepository : IShortenedEntryRepository
     public async Task<Option<ShortenedEntry>> CreateAsync(
         ShortenedEntry shortenedEntry, CancellationToken cancellationToken)
     {
-        var session = await _databaseContext.GetConnectionAsync(cancellationToken);
+        var session = await _databaseConnectionProvider.GetConnectionAsync(cancellationToken);
         var mapper = new Mapper(session);
 
         var appliedInfo = await mapper.InsertIfNotExistsAsync(shortenedEntry);
 
-        return appliedInfo.Applied ? shortenedEntry : Option<ShortenedEntry>.None;
+        return appliedInfo.Applied
+            ? shortenedEntry
+            : Option<ShortenedEntry>.None;
     }
 }

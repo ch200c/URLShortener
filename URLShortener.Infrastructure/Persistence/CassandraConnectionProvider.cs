@@ -1,5 +1,7 @@
 ﻿using Cassandra;
 using Cassandra.Mapping;
+using LanguageExt;
+using static LanguageExt.Prelude;
 using URLShortener.Application.Persistence;
 
 namespace URLShortener.Infrastructure.Persistence;
@@ -11,8 +13,9 @@ public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<IS
     private readonly IEnumerable<string> _contactPoints;
     private readonly int _port;
     private readonly string _keyspace;
-    private ICluster? _cluster;
-    private ISession? _session;
+
+    private Option<ICluster> _optionalCluster = Option<ICluster>.None;
+    private Option<ISession> _optionalSession = Option<ISession>.None;
 
     public CassandraConnectionProvider(IEnumerable<string> contactPoints, int port, string keyspace)
     {
@@ -23,64 +26,62 @@ public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<IS
         MappingConfiguration.Global.Define<ShortenedEntryMapping>();
     }
 
-    // TODO: private and Option<usage>
-    public async Task<ICluster> GetClusterAsync(CancellationToken cancellationToken)
-    {
-        await _clusterInitializationSemaphore.WaitAsync(cancellationToken);
-
-        try
-        {
-            _cluster ??= Cluster
-                .Builder()
-                .AddContactPoints(_contactPoints)
-                .WithPort(_port)
-                .Build();
-        }
-        finally
-        {
-            _clusterInitializationSemaphore.Release();
-        }
-
-        return _cluster;
-    }
-
     public async Task<ISession> GetConnectionAsync(CancellationToken cancellationToken)
     {
         await _sessionInitializationSemaphore.WaitAsync(cancellationToken);
+        ISession session;
 
         try
         {
-            if (_session == null)
+            session = await _optionalSession.IfNoneAsync(async () =>
             {
                 var cluster = await GetClusterAsync(cancellationToken);
-                _session = await cluster.ConnectAsync(_keyspace);
-            }
+                return await cluster.ConnectAsync(_keyspace);
+            });
+
+            _optionalSession = Some(session);
         }
         finally
         {
             _sessionInitializationSemaphore.Release();
         }
 
-        return _session;
+        return session;
+    }
+
+    private async Task<ICluster> GetClusterAsync(CancellationToken cancellationToken)
+    {
+        await _clusterInitializationSemaphore.WaitAsync(cancellationToken);
+        ICluster cluster;
+
+        try
+        {
+            cluster = _optionalCluster.IfNone(() =>
+                Cluster
+                    .Builder()
+                    .AddContactPoints(_contactPoints)
+                    .WithPort(_port)
+                    .Build());
+
+            _optionalCluster = Some(cluster);
+        }
+        finally
+        {
+            _clusterInitializationSemaphore.Release();
+        }
+
+        return cluster;
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_cluster == null)
-        {
-            return;
-        }
-
-        await _cluster.ShutdownAsync();
+        await _optionalCluster.IfSomeAsync(cluster =>
+            cluster.ShutdownAsync());
     }
 
     public void Dispose()
     {
-        if (_cluster == null)
-        {
-            return;
-        }
-
-        _cluster.Shutdown();
+        _optionalCluster.IfSome(cluster =>
+            cluster.Shutdown());
     }
 }
