@@ -81,7 +81,7 @@ If all is well, you should be able to access the API at http://localhost:9889/sw
 ```
 docker kill cassandra-node1
 docker kill cassandra-node2
-docker kill zookeper
+docker kill zookeeper
 docker kill broker
 docker kill url-shortener-api
 docker kill url-shortener-generator
