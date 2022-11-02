@@ -41,14 +41,12 @@ builder.Services.AddSingleton<IMessageConsumer<ConsumeResult<Null, string>>, Kaf
 builder.Services.AddTransient<IShortenedEntryRepository, ShortenedEntryRepository>();
 builder.Services.AddTransient<IAliasService, AliasService>();
 builder.Services.AddTransient<IShortenedEntryCreationService, ShortenedEntryCreationService>();
+builder.Services.AddTransient<IShortenedEntryService, ShortenedEntryService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

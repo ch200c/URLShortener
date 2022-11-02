@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
 using URLShortener.Application;
 using URLShortener.Application.Services;
-using URLShortener.Application.Persistence;
 using URLShortener.Domain;
 
 namespace URLShortener.API.Controllers;
@@ -12,18 +11,11 @@ namespace URLShortener.API.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class ShortenedEntryController : ControllerBase
 {
-    private readonly ILogger<ShortenedEntryController> _logger;
-    private readonly IShortenedEntryRepository _shortenedEntryRepository;
-    private readonly IShortenedEntryCreationService _shortenedEntryCreationService;
+    private readonly IShortenedEntryService _shortenedEntryService;
 
-    public ShortenedEntryController(
-        ILogger<ShortenedEntryController> logger,
-        IShortenedEntryRepository shortenedEntryRepository,
-        IShortenedEntryCreationService shortenedEntryCreationService)
+    public ShortenedEntryController(IShortenedEntryService shortenedEntryService)
     {
-        _logger = logger;
-        _shortenedEntryRepository = shortenedEntryRepository;
-        _shortenedEntryCreationService = shortenedEntryCreationService;
+        _shortenedEntryService = shortenedEntryService;
     }
 
     [HttpGet("{alias}")]
@@ -31,7 +23,7 @@ public class ShortenedEntryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetShortenedEntry([FromRoute] string alias, CancellationToken cancellationToken)
     {
-        var optionalEntry = await _shortenedEntryRepository.GetByAliasAsync(alias, cancellationToken);
+        var optionalEntry = await _shortenedEntryService.GetByAliasAsync(alias, cancellationToken);
 
         return optionalEntry
             .Some<IActionResult>(entry => Redirect(entry.Url))
@@ -44,7 +36,7 @@ public class ShortenedEntryController : ControllerBase
     public async Task<IActionResult> CreateShortenedEntry(
         [FromBody] CreateShortenedEntryRequest request, CancellationToken cancellationToken)
     {
-        var optionalEntry = await _shortenedEntryCreationService.CreateAsync(request, cancellationToken);
+        var optionalEntry = await _shortenedEntryService.CreateAsync(request, cancellationToken);
 
         return optionalEntry
             .Some<IActionResult>(entry =>

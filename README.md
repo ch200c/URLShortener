@@ -93,6 +93,7 @@ https://github.com/ch200c/URLShortener/blob/fc2044be0b7bc389f1a88b915973b1f891c1
 
 ## TODO
 - Resilience policies
+- Authentication
 - Optimize alias generation in batches, etc
 - Cache
 - CORS check

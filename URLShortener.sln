@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", 
 		migrations\v002_create_table_shortened_entries.cql = migrations\v002_create_table_shortened_entries.cql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "URLShortener.Application.UnitTests", "URLShortener.Application.UnitTests\URLShortener.Application.UnitTests.csproj", "{56DCE2E2-72B0-4C7A-B891-E6C34B7B708F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{5FFEEA3C-842F-4308-BC35-EFB982FB6D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FFEEA3C-842F-4308-BC35-EFB982FB6D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FFEEA3C-842F-4308-BC35-EFB982FB6D28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56DCE2E2-72B0-4C7A-B891-E6C34B7B708F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56DCE2E2-72B0-4C7A-B891-E6C34B7B708F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56DCE2E2-72B0-4C7A-B891-E6C34B7B708F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56DCE2E2-72B0-4C7A-B891-E6C34B7B708F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{DF0426DC-3DBD-47DF-8F33-EA5E31CED88B} = {98F40C1F-7979-4B9B-AC62-338F21DB35ED}
 		{1D0DE664-0B16-4992-93FF-0125941ACACB} = {98F40C1F-7979-4B9B-AC62-338F21DB35ED}
 		{5FFEEA3C-842F-4308-BC35-EFB982FB6D28} = {98F40C1F-7979-4B9B-AC62-338F21DB35ED}
+		{56DCE2E2-72B0-4C7A-B891-E6C34B7B708F} = {767FC2CE-9380-48C5-93A3-5FDE1EB349AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E6516A0-7095-428D-B982-D9C614416487}

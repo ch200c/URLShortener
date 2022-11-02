@@ -1,10 +1,9 @@
-﻿using LanguageExt;
-using URLShortener.Domain;
+﻿using URLShortener.Domain;
 
 namespace URLShortener.Application.Services;
 
 public interface IShortenedEntryCreationService
 {
-    Task<Option<ShortenedEntry>> CreateAsync(
+    Task<ShortenedEntry> CreateAsync(
         CreateShortenedEntryRequest request, CancellationToken cancellationToken);
 }
