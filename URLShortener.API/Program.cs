@@ -5,6 +5,9 @@ using URLShortener.Application.Persistence;
 using URLShortener.Infrastructure.Messaging;
 using Confluent.Kafka;
 using URLShortener.Application.Messaging;
+using Microsoft.AspNetCore.Mvc;
+using URLShortener.Application.Converters;
+using URLShortener.API.SchemaFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +25,13 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SchemaFilter<CreateShortenedEntryRequestSchemaFilter>();
+});
+
+builder.Services.Configure<JsonOptions>(options =>
+    options.JsonSerializerOptions.Converters.Add(new OptionOfStringJsonConverter()));
 
 builder.Services.AddCassandra(builder.Configuration.GetSection("Cassandra"));
 

@@ -1,4 +1,6 @@
-﻿namespace URLShortener.Application.UnitTests.Services;
+﻿using LanguageExt;
+
+namespace URLShortener.Application.UnitTests.Services;
 
 public class ShortenedEntryCreationServiceTests
 {
@@ -16,7 +18,7 @@ public class ShortenedEntryCreationServiceTests
             .ReturnsAsync(generatedAlias);
 
         var sut = new ShortenedEntryCreationService(aliasServiceMock.Object);
-        var request = new CreateShortenedEntryRequest(Alias: null, Url: string.Empty, Expiration: default);
+        var request = new CreateShortenedEntryRequest(Alias: Option<string>.None, Url: string.Empty, Expiration: default);
 
         // Act
         var shortenedEntry = await sut.CreateAsync(request, cancellationToken);

@@ -74,13 +74,11 @@ public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<IS
 
     public async ValueTask DisposeAsync()
     {
-        await _optionalCluster.IfSomeAsync(cluster =>
-            cluster.ShutdownAsync());
+        await _optionalCluster.IfSomeAsync(cluster => cluster.ShutdownAsync());
     }
 
     public void Dispose()
     {
-        _optionalCluster.IfSome(cluster =>
-            cluster.Shutdown());
+        _optionalCluster.IfSome(cluster => cluster.Shutdown());
     }
 }

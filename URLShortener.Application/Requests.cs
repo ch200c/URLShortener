@@ -1,4 +1,6 @@
-﻿namespace URLShortener.Application;
+﻿using LanguageExt;
 
-public record class CreateShortenedEntryRequest(string? Alias, string Url, DateTime Expiration);
+namespace URLShortener.Application;
+
+public record class CreateShortenedEntryRequest(Option<string> Alias, string Url, DateTime Expiration);
 public record class GenerateAliasRequest(int Length, char[] AllowedChars);

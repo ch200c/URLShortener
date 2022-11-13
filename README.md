@@ -102,6 +102,5 @@ https://github.com/ch200c/URLShortener/blob/fc2044be0b7bc389f1a88b915973b1f891c1
 - Alias expiration - cleanup expired links
 - Users
 - Port exposure for other Cassandra nodes on the same machine
-- Option<T> usage instead of nullable types
 - Access modifiers
 

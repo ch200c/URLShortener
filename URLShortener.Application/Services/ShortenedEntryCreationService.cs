@@ -14,16 +14,8 @@ public class ShortenedEntryCreationService : IShortenedEntryCreationService
     public async Task<ShortenedEntry> CreateAsync(
         CreateShortenedEntryRequest request, CancellationToken cancellationToken)
     {
-        string alias;
-
-        if (request.Alias == null)
-        {
-            alias = await _aliasService.GetAvailableAliasAsync(cancellationToken);
-        }
-        else
-        {
-            alias = request.Alias;
-        }
+        var alias = await request.Alias
+            .IfNoneAsync(() => _aliasService.GetAvailableAliasAsync(cancellationToken));
 
         return new ShortenedEntry
         {
