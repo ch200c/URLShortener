@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
-using URLShortener.Application.Messaging;
+using UrlShortener.Application.Messaging;
 
-namespace URLShortener.Infrastructure.Messaging;
+namespace UrlShortener.Infrastructure.Messaging;
 
 public sealed class KafkaConsumer : IMessageConsumer<ConsumeResult<Null, string>>, IDisposable
 {

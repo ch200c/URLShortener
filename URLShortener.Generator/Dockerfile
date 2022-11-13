@@ -5,16 +5,16 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["URLShortener.Generator/URLShortener.Generator.csproj", "URLShortener.Generator/"]
-RUN dotnet restore "URLShortener.Generator/URLShortener.Generator.csproj"
+COPY ["UrlShortener.Generator/UrlShortener.Generator.csproj", "UrlShortener.Generator/"]
+RUN dotnet restore "UrlShortener.Generator/UrlShortener.Generator.csproj"
 COPY . .
-WORKDIR "/src/URLShortener.Generator"
-RUN dotnet build "URLShortener.Generator.csproj" -c Release -o /app/build
+WORKDIR "/src/UrlShortener.Generator"
+RUN dotnet build "UrlShortener.Generator.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "URLShortener.Generator.csproj" -c Release -o /app/publish
+RUN dotnet publish "UrlShortener.Generator.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "URLShortener.Generator.dll"]
+ENTRYPOINT ["dotnet", "UrlShortener.Generator.dll"]

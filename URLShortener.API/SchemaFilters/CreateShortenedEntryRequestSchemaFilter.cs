@@ -1,9 +1,9 @@
 ﻿using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using URLShortener.Application;
+using UrlShortener.Application;
 
-namespace URLShortener.API.SchemaFilters;
+namespace UrlShortener.Api.SchemaFilters;
 
 public class CreateShortenedEntryRequestSchemaFilter : ISchemaFilter
 {

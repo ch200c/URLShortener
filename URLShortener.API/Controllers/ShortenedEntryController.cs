@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
-using URLShortener.Application;
-using URLShortener.Application.Services;
-using URLShortener.Domain;
+using UrlShortener.Application;
+using UrlShortener.Application.Services;
+using UrlShortener.Domain;
 
-namespace URLShortener.API.Controllers;
+namespace UrlShortener.Api.Controllers;
 
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]

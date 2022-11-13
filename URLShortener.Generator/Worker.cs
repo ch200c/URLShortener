@@ -1,10 +1,10 @@
 using Confluent.Kafka;
-using URLShortener.Application;
-using URLShortener.Application.Messaging;
-using URLShortener.Application.Persistence;
-using URLShortener.Application.Services;
+using UrlShortener.Application;
+using UrlShortener.Application.Messaging;
+using UrlShortener.Application.Persistence;
+using UrlShortener.Application.Services;
 
-namespace URLShortener.Generator;
+namespace UrlShortener.Generator;
 
 public class Worker : BackgroundService
 {

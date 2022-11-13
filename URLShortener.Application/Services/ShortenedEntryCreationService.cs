@@ -1,6 +1,6 @@
-﻿using URLShortener.Domain;
+﻿using UrlShortener.Domain;
 
-namespace URLShortener.Application.Services;
+namespace UrlShortener.Application.Services;
 
 public class ShortenedEntryCreationService : IShortenedEntryCreationService
 {

@@ -1,4 +1,4 @@
-﻿namespace URLShortener.Application.Persistence;
+﻿namespace UrlShortener.Application.Persistence;
 
 public interface IDatabaseConnectionProvider<TConnection>
 {

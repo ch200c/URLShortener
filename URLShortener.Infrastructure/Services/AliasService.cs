@@ -1,8 +1,8 @@
 ﻿using Confluent.Kafka;
-using URLShortener.Application.Messaging;
-using URLShortener.Application.Services;
+using UrlShortener.Application.Messaging;
+using UrlShortener.Application.Services;
 
-namespace URLShortener.Infrastructure.Services;
+namespace UrlShortener.Infrastructure.Services;
 
 public class AliasService : IAliasService
 {

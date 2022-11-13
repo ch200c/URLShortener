@@ -1,8 +1,8 @@
 ﻿using LanguageExt;
-using URLShortener.Application.Persistence;
-using URLShortener.Domain;
+using UrlShortener.Application.Persistence;
+using UrlShortener.Domain;
 
-namespace URLShortener.Application.Services;
+namespace UrlShortener.Application.Services;
 
 public class ShortenedEntryService : IShortenedEntryService
 {

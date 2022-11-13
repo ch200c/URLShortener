@@ -1,4 +1,4 @@
-﻿namespace URLShortener.Domain;
+﻿namespace UrlShortener.Domain;
 
 public class ShortenedEntry
 {

@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["URLShortener.API/URLShortener.API.csproj", "URLShortener.API/"]
-RUN dotnet restore "URLShortener.API/URLShortener.API.csproj"
+COPY ["UrlShortener.Api/UrlShortener.Api.csproj", "UrlShortener.Api/"]
+RUN dotnet restore "UrlShortener.Api/UrlShortener.Api.csproj"
 COPY . .
-WORKDIR "/src/URLShortener.API"
-RUN dotnet build "URLShortener.API.csproj" -c Release -o /app/build
+WORKDIR "/src/UrlShortener.Api"
+RUN dotnet build "UrlShortener.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "URLShortener.API.csproj" -c Release -o /app/publish
+RUN dotnet publish "UrlShortener.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "URLShortener.API.dll"]
+ENTRYPOINT ["dotnet", "UrlShortener.Api.dll"]

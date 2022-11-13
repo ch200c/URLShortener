@@ -1,3 +1,3 @@
 global using Xunit;
 global using Moq;
-global using URLShortener.Application.Services;
+global using UrlShortener.Application.Services;

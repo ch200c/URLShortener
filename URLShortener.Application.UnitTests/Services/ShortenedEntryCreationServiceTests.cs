@@ -1,6 +1,6 @@
 ﻿using LanguageExt;
 
-namespace URLShortener.Application.UnitTests.Services;
+namespace UrlShortener.Application.UnitTests.Services;
 
 public class ShortenedEntryCreationServiceTests
 {

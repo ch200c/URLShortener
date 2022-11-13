@@ -1,9 +1,9 @@
 ﻿using Cassandra;
 using Cassandra.Mapping;
 using LanguageExt;
-using URLShortener.Application.Persistence;
+using UrlShortener.Application.Persistence;
 
-namespace URLShortener.Infrastructure.Persistence;
+namespace UrlShortener.Infrastructure.Persistence;
 
 public sealed class CassandraConnectionProvider : IDatabaseConnectionProvider<ISession>, IAsyncDisposable, IDisposable
 {

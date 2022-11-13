@@ -1,4 +1,4 @@
-﻿namespace URLShortener.Application.Services;
+﻿namespace UrlShortener.Application.Services;
 
 public class AliasGenerator : IAliasGenerator
 {

@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using System.Text.Json;
 
-namespace URLShortener.Application.Converters;
+namespace UrlShortener.Application.Converters;
 
 public class OptionOfStringJsonConverter : JsonConverter<Option<string>>
 {

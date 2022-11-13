@@ -1,13 +1,13 @@
-using URLShortener.Application.Services;
-using URLShortener.Infrastructure.Services;
-using URLShortener.Infrastructure.Persistence;
-using URLShortener.Application.Persistence;
-using URLShortener.Infrastructure.Messaging;
+using UrlShortener.Application.Services;
+using UrlShortener.Infrastructure.Services;
+using UrlShortener.Infrastructure.Persistence;
+using UrlShortener.Application.Persistence;
+using UrlShortener.Infrastructure.Messaging;
 using Confluent.Kafka;
-using URLShortener.Application.Messaging;
+using UrlShortener.Application.Messaging;
 using Microsoft.AspNetCore.Mvc;
-using URLShortener.Application.Converters;
-using URLShortener.API.SchemaFilters;
+using UrlShortener.Application.Converters;
+using UrlShortener.Api.SchemaFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 

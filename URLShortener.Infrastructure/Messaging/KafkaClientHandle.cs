@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 
-namespace URLShortener.Infrastructure.Messaging;
+namespace UrlShortener.Infrastructure.Messaging;
 
 public sealed class KafkaClientHandle : IDisposable
 {

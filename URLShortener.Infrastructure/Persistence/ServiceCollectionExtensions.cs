@@ -1,9 +1,9 @@
 ﻿using Cassandra;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using URLShortener.Application.Persistence;
+using UrlShortener.Application.Persistence;
 
-namespace URLShortener.Infrastructure.Persistence;
+namespace UrlShortener.Infrastructure.Persistence;
 
 public static class ServiceCollectionExtensions
 {

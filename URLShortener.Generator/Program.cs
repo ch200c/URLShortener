@@ -1,10 +1,10 @@
 using Confluent.Kafka;
-using URLShortener.Application.Messaging;
-using URLShortener.Application.Persistence;
-using URLShortener.Application.Services;
-using URLShortener.Generator;
-using URLShortener.Infrastructure.Messaging;
-using URLShortener.Infrastructure.Persistence;
+using UrlShortener.Application.Messaging;
+using UrlShortener.Application.Persistence;
+using UrlShortener.Application.Services;
+using UrlShortener.Generator;
+using UrlShortener.Infrastructure.Messaging;
+using UrlShortener.Infrastructure.Persistence;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>

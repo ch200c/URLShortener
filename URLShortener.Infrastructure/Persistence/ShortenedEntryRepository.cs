@@ -1,10 +1,10 @@
 ﻿using Cassandra;
 using Cassandra.Mapping;
 using LanguageExt;
-using URLShortener.Application.Persistence;
-using URLShortener.Domain;
+using UrlShortener.Application.Persistence;
+using UrlShortener.Domain;
 
-namespace URLShortener.Infrastructure.Persistence;
+namespace UrlShortener.Infrastructure.Persistence;
 
 public class ShortenedEntryRepository : IShortenedEntryRepository
 {

@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-URLShortener.Generator-C87AEF4E-8E65-4234-A4D7-6943B6EB1557</UserSecretsId>
+    <UserSecretsId>dotnet-UrlShortener.Generator-C87AEF4E-8E65-4234-A4D7-6943B6EB1557</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -14,6 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\URLShortener.Infrastructure\URLShortener.Infrastructure.csproj" />
+    <ProjectReference Include="..\UrlShortener.Infrastructure\UrlShortener.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
