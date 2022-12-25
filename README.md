@@ -65,13 +65,13 @@ docker exec broker kafka-topics --create --topic alias_candidates --bootstrap-se
 
 #### Run alias generator
 ```
-docker build -f UrlShortener.Generator/Dockerfile -t url-shortener-generator .
+docker build -f Generator/Generator.Worker/Dockerfile -t url-shortener-generator .
 docker run --rm -d --network url-shortener-network -e "DOTNET_ENVIRONMENT=Development" --name url-shortener-generator url-shortener-generator
 ```
 
 #### Run API
 ```
-docker build -f UrlShortener.Api/Dockerfile -t url-shortener-api .
+docker build -f Api/UrlShortener.Api/Dockerfile -t url-shortener-api .
 docker run --rm -d --network url-shortener-network -e "ASPNETCORE_ENVIRONMENT=Development" -e "ASPNETCORE_URLS=http://+:80" -p 9889:80/tcp --name url-shortener-api url-shortener-api
 ```
 

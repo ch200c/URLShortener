@@ -1,7 +1,7 @@
 ﻿using Confluent.Kafka;
-using UrlShortener.Application.Messaging;
+using Generator.Application.Messaging;
 
-namespace UrlShortener.Infrastructure.Messaging;
+namespace Generator.Infrastructure.Messaging;
 
 public sealed class KafkaProducer<TKey, TValue> : IMessageProducer<Message<TKey, TValue>>, IDisposable
 {

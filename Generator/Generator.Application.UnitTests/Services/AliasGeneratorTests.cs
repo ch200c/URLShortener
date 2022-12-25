@@ -1,4 +1,4 @@
-﻿namespace UrlShortener.Application.UnitTests.Services;
+﻿namespace Generator.Application.UnitTests.Services;
 
 public class AliasGeneratorTests
 {

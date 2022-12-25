@@ -1,16 +1,12 @@
 using Confluent.Kafka;
-using UrlShortener.Application.Messaging;
-using UrlShortener.Application.Persistence;
-using UrlShortener.Application.Services;
-using UrlShortener.Generator;
-using UrlShortener.Infrastructure.Messaging;
-using UrlShortener.Infrastructure.Persistence;
+using Generator.Application.Messaging;
+using Generator.Application.Services;
+using Generator.Worker;
+using Generator.Infrastructure.Messaging;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        services.AddCassandra(context.Configuration.GetSection("Cassandra"));
-
         services.AddSingleton<KafkaClientHandle>(_ =>
         {
             var producerConfig = new ProducerConfig();
@@ -29,7 +25,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         });
 
         services.AddTransient<IAliasGenerator, AliasGenerator>();
-        services.AddTransient<IShortenedEntryRepository, ShortenedEntryRepository>();
 
         services.AddHostedService(serviceProvider =>
         {
@@ -39,7 +34,6 @@ IHost host = Host.CreateDefaultBuilder(args)
             var aliasGenerationInterval = context.Configuration.GetValue<TimeSpan>("AliasGenerationInterval");
             var aliasGenerationCount = context.Configuration.GetValue<int>("AliasGenerationCount");
             var aliasGenerator = serviceProvider.GetRequiredService<IAliasGenerator>();
-            var shortenedEntryRepository = serviceProvider.GetRequiredService<IShortenedEntryRepository>();
             var messageProducer = serviceProvider.GetRequiredService<IMessageProducer<Message<Null, string>>>();
 
             return new Worker(
@@ -49,7 +43,6 @@ IHost host = Host.CreateDefaultBuilder(args)
                 aliasGenerationInterval,
                 aliasGenerationCount,
                 aliasGenerator,
-                shortenedEntryRepository,
                 messageProducer);
         });
     })

@@ -1,4 +1,4 @@
-﻿namespace UrlShortener.Application.Messaging;
+﻿namespace Generator.Application.Messaging;
 
 public interface IMessageProducer<in TMessage>
 {

@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["UrlShortener.Api/UrlShortener.Api.csproj", "UrlShortener.Api/"]
+COPY ["Api/UrlShortener.Api/UrlShortener.Api.csproj", "UrlShortener.Api/"]
 RUN dotnet restore "UrlShortener.Api/UrlShortener.Api.csproj"
 COPY . .
-WORKDIR "/src/UrlShortener.Api"
+WORKDIR "/src/Api/UrlShortener.Api"
 RUN dotnet build "UrlShortener.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -1,10 +1,9 @@
 using Confluent.Kafka;
-using UrlShortener.Application;
-using UrlShortener.Application.Messaging;
-using UrlShortener.Application.Persistence;
-using UrlShortener.Application.Services;
+using Generator.Application;
+using Generator.Application.Messaging;
+using Generator.Application.Services;
 
-namespace UrlShortener.Generator;
+namespace Generator.Worker;
 
 public class Worker : BackgroundService
 {
@@ -14,7 +13,6 @@ public class Worker : BackgroundService
     private readonly TimeSpan _aliasGenerationInterval;
     private readonly int _aliasGenerationCount;
     private readonly IAliasGenerator _aliasGenerator;
-    private readonly IShortenedEntryRepository _shortenedEntryRepository;
     private readonly IMessageProducer<Message<Null, string>> _messageProducer;
 
     public Worker(
@@ -24,7 +22,6 @@ public class Worker : BackgroundService
         TimeSpan aliasGenerationInterval,
         int aliasGenerationCount,
         IAliasGenerator aliasGenerator,
-        IShortenedEntryRepository shortenedEntryRepository,
         IMessageProducer<Message<Null, string>> messageProducer)
     {
         _logger = logger;
@@ -33,7 +30,6 @@ public class Worker : BackgroundService
         _aliasGenerationInterval = aliasGenerationInterval;
         _aliasGenerationCount = aliasGenerationCount;
         _aliasGenerator = aliasGenerator;
-        _shortenedEntryRepository = shortenedEntryRepository;
         _messageProducer = messageProducer;
     }
 
@@ -43,7 +39,7 @@ public class Worker : BackgroundService
         {
             for (var i = 0; i < _aliasGenerationCount; i++)
             {
-                var alias = await GenerateAliasAsync(stoppingToken);
+                var alias = GenerateAlias();
 
                 var message = new Message<Null, string>() { Value = alias };
                 await _messageProducer.ProduceAsync(message, stoppingToken);
@@ -58,28 +54,9 @@ public class Worker : BackgroundService
         }
     }
 
-    private async Task<string> GenerateAliasAsync(CancellationToken cancellationToken)
+    private string GenerateAlias()
     {
         var request = new GenerateAliasRequest(_aliasLength, _allowedCharacters);
-        var aliasCandidate = _aliasGenerator.Generate(request);
-
-        var isGenerating = true;
-
-        while (isGenerating)
-        {
-            var optionalEntry = await _shortenedEntryRepository.GetByAliasAsync(aliasCandidate, cancellationToken);
-
-            optionalEntry
-                .Some(entry =>
-                {
-                    aliasCandidate = _aliasGenerator.Generate(request);
-                })
-                .None(() =>
-                {
-                    isGenerating = false;
-                });
-        }
-
-        return aliasCandidate;
+        return _aliasGenerator.Generate(request);
     }
 }
